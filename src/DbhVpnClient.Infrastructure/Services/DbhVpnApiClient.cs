@@ -10,7 +10,7 @@ namespace DbhVpnClient.Infrastructure.Services
            /*  IEnumerable<IMyDependency> myDependencies */ )
         {
             ArgumentNullException.ThrowIfNull(client, nameof(client));
-
+            
             _client = client;
         }
 

@@ -21,11 +21,12 @@ namespace DbhVpnClient.App
             var services = new ServiceCollection();
 
             services.AddInferstructure(config);
+            services.AddScoped<MainForm>();
 
             using (ServiceProvider serviceProvider = services.BuildServiceProvider())
             {
-                var form1 = serviceProvider.GetRequiredService<Form1>();
-                Application.Run(form1);
+                var mainForm = serviceProvider.GetRequiredService<MainForm>();
+                Application.Run(mainForm);
             }
         }
     }
