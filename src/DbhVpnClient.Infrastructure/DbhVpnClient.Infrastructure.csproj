@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="HttpProviders\" />
-    <Folder Include="Dtos\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,6 +15,8 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Websocket.Client" Version="4.4.43" />
   </ItemGroup>
 
 	<ItemGroup>

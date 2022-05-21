@@ -1,35 +1,37 @@
 using System.Diagnostics;
-
 using DbhVpnClient.Contracts.Orchestrators;
 
 namespace DbhVpnClient.App
 {
     public partial class MainForm : Form
     {
-        /*        private readonly IDbhVpnApiClientService _dbhVpnApiClientService;
+        private readonly IDbhVpnApiClientService _dbhVpnApiClientService;
+        private readonly IAuthenticationWebsocketService _authenticationWebsocketService;
+        private readonly EventHandler AuthProcessCompleted;
 
-                MainForm(
-                    IDbhVpnApiClientService dbhVpnApiClientService)
-                {
-                    _dbhVpnApiClientService = dbhVpnApiClientService;
-                }
-        */
+        private string ClientIp = "0.0.0.0";
 
+        private bool IsUserAuthenticating = false;
         private bool IsUserAuthenticated = false;
 
-        public MainForm()
+        public MainForm(IDbhVpnApiClientService dbhVpnApiClientService,
+            IAuthenticationWebsocketService authenticationWebsocketService)
         {
+            _dbhVpnApiClientService = dbhVpnApiClientService;
+            _authenticationWebsocketService = authenticationWebsocketService;
 
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private async void Form1_Load(object sender, EventArgs e)
         {
             HideAll();
             ShowAccountScreen();
+
+            button_Dissconnect.Enabled = false;
+            ClientIp = await _dbhVpnApiClientService.GetIpAdressAsync();
+            label_CurrentIP.Text = ClientIp;
         }
-
-
 
 
         private void button_menu_Account_Click(object sender, EventArgs e)
@@ -68,13 +70,37 @@ namespace DbhVpnClient.App
             button_Login.Visible = false;
         }
 
-
-
-
-        private void button_Login_Click(object sender, EventArgs e)
+        private void Render()
         {
+            button_Login.Enabled = !IsUserAuthenticating;
+        }
+
+
+        private async void button_Login_Click(object sender, EventArgs e)
+        {
+            IsUserAuthenticating = true;
+
+            _authenticationWebsocketService.CreateNewAuthWebSocketAsync("jfsljl", AuthProcessCompleted);
+
+            AuthProcessCompleted += OnUserHasAuthnticated;
+
+            Render();
             if (!IsUserAuthenticated)
-                Process.Start(new ProcessStartInfo("https://auth.danbot.host/login?service=vpn.local") { UseShellExecute = true });
+                Process.Start(new ProcessStartInfo("http://localhost/auth/create?code=jfsljl") { UseShellExecute = true });
+        }
+        void AuthProcessCompleted(object sender, EventArgs e)
+        {
+            //lable_ConnectedTo.Text = jwt;
+            Render();
+            //Do something here
+        }
+
+        public void OnUserHasAuthnticated(object o, EventArgs s)
+        {
+            IsUserAuthenticated = true;
+            IsUserAuthenticating = false;
+
+            AuthProcessCompleted(this, null);
         }
     }
 }

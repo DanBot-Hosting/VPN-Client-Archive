@@ -12,14 +12,17 @@ namespace DbhVpnClient.Inferstructure
         public static IServiceCollection AddInferstructure(
             this IServiceCollection services, IConfiguration config)
             {
-            services.Configure<DbhVpnApiConfig>(
-                config.GetSection(DbhVpnApiConfig.SectionName)
-            )
+                services.Configure<DbhVpnApiConfig>(
+                    config.GetSection(DbhVpnApiConfig.SectionName)
+                )
 
-            .AddHttpClient<IDbhVpnApiClientService, DbhVpnApiClientService>(client =>
-            {
+                .AddHttpClient<IDbhVpnApiClientService, DbhVpnApiClientService>(client =>
+                {
+                    client.BaseAddress = new Uri("http://localhost/");
+                });
 
-            });
+                services.AddTransient<IAuthenticationWebsocketService, AuthenticationWebsocketService>();
+
 
                 return services;
             }

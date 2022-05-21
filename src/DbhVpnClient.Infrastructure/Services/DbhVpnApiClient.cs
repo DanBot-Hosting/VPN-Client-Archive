@@ -1,4 +1,6 @@
 ﻿using DbhVpnClient.Contracts.Orchestrators;
+using DbhVpnClient.Infrastructure.Dtos;
+using Newtonsoft.Json;
 
 namespace DbhVpnClient.Infrastructure.Services
 {
@@ -16,7 +18,15 @@ namespace DbhVpnClient.Infrastructure.Services
 
         public async Task<string> GetIpAdressAsync()
         {
-            return string.Empty;
+            var response = await _client.GetAsync("/ip");
+
+            response.EnsureSuccessStatusCode();
+
+            var rawJsonResponce = await response.Content.ReadAsStringAsync();
+
+            var json = JsonConvert.DeserializeObject<IpDto>(rawJsonResponce);
+
+            return json.Ip;
         }
     }
 }
